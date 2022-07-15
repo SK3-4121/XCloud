@@ -1,0 +1,552 @@
+<script>
+    function run() {
+        window.location.href = "http://192.168.1.69:3000/upload/"
+    }
+</script>
+
+<html lang="en" bs-app-theme="dark">
+
+<head>
+    <base href="" bs-system-element="" bs-hidden="">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>XCloud</title>
+    <link rel="icon" type="image/png" href="ico/logo.png"/>
+    <link rel="stylesheet" href="https://bootstrapstudio.io/demo//embed//bootstrap/5/default/bootstrap.min.css">
+    <style bs-system-element="" bs-hidden="">
+        :root {
+            --canvas-background: #1c1e1f;
+            --scrollbar-thumb: #677073;
+            --scrollbar-thumb-hover: #767F82;
+        }
+
+        [bs-app-theme="light"] {
+            --canvas-background: #f0f0f0;
+            --scrollbar-thumb: #b0b4b9;
+            --scrollbar-thumb-hover: #a1a6ac;
+        }
+
+        html::-webkit-scrollbar {
+            height: 7px;
+            width: 7px;
+            background: var(--canvas-background);
+        }
+
+        html::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+        }
+
+        html::-webkit-scrollbar-thumb:hover {
+            background: var(--scrollbar-thumb-hover);
+        }
+
+        html::-webkit-scrollbar-corner {
+            display: none;
+        }
+
+        html,
+        body {
+
+            /* 
+    Prevent the in app .view-wrapper scroll from disappearing
+    when users add overflow: hidden to the html/body.
+
+    { overflow: hidden !important; } will still disable the scroll. 
+    We use it when showing modals and offcanvas components (bs-no-scroll).
+*/
+
+            overflow: inherit !important;
+        }
+
+        html {
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            min-height: 650px;
+        }
+
+        body[bs-extra-whitespace]:after {
+            content: '';
+            display: block;
+            height: 500px;
+        }
+
+        * {
+            cursor: default !important;
+            pointer-events: all !important;
+        }
+
+        a {
+            cursor: text;
+        }
+
+        img:not([src]):not([srcset]) {
+            width: 100px;
+            height: 80px;
+            position: relative;
+        }
+
+        img:not([src]):not([srcset]):after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='50' height='50'%3E%3Cdefs%3E%3Cpath d='M23 31l-3.97-2.9L19 28l-.24-.09.19.13L13 33v2h24v-2l-3-9-5-3-6 10zm-2-12c0-1.66-1.34-3-3-3s-3 1.34-3 3 1.34 3 3 3 3-1.34 3-3zm-11-8c-.55 0-1 .45-1 1v26c0 .55.45 1 1 1h30c.55 0 1-.45 1-1V12c0-.55-.45-1-1-1H10zm28 26H12c-.55 0-1-.45-1-1V14c0-.55.45-1 1-1h26c.55 0 1 .45 1 1v22c-.3.67-.63 1-1 1z' id='a'/%3E%3C/defs%3E%3Cuse xlink:href='%23a' fill='%23fff'/%3E%3Cuse xlink:href='%23a' fill-opacity='0' stroke='%23000' stroke-opacity='0'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #eaeaeb;
+        }
+
+        /* Stopping css animations on the stage */
+
+        *:not([bs-anim-preview]) {
+            transition: none !important;
+            transition-duration: 0s !important;
+        }
+
+        [bs-cut],
+        [bs-dragged] {
+            opacity: 0.3 !important;
+        }
+
+        /* Inline editing */
+
+        [contenteditable=true] {
+            box-shadow: -1px -1px 1px rgba(17, 142, 232, 0.85),
+                1px 1px 1px rgba(17, 142, 232, 0.85),
+                0 0 11px rgba(17, 142, 232, 0.85) !important;
+            outline: none !important;
+            min-height: 1em;
+            cursor: initial !important;
+        }
+
+        [contenteditable=true] *:not([contenteditable=false]) {
+            cursor: initial !important;
+        }
+
+        [contenteditable=true]:empty:before {
+            content: "\00a0\00a0" !important;
+        }
+
+        [contenteditable=true] [contenteditable=false] {
+            box-shadow: 0 0 0 1px rgba(17, 142, 232, 0.85);
+        }
+
+        [contenteditable=true] sub {
+            vertical-align: sub;
+            bottom: 0;
+        }
+
+        [contenteditable=true] sup {
+            vertical-align: super;
+            top: 0;
+        }
+
+        /* Preventing mouse events for embeds */
+
+        iframe,
+        embed,
+        object,
+        audio {
+            pointer-events: none !important;
+        }
+
+        html.hit-testing iframe,
+        html.hit-testing embed,
+        html.hit-testing object,
+        html.hit-testing audio {
+            pointer-events: all !important;
+        }
+
+        lottie-player {
+            display: block;
+        }
+
+
+
+        /* Modal scroll and canvas scroll have the same styles: */
+
+        body.modal-open .modal::-webkit-scrollbar {
+            height: 7px;
+            width: 7px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        body.modal-open .modal::-webkit-scrollbar-corner {
+            display: none;
+        }
+
+        body.modal-open .modal::-webkit-scrollbar-thumb {
+            background: rgb(137, 143, 146);
+        }
+
+        body.modal-open .modal::-webkit-scrollbar-track {
+            background: #2f363a;
+        }
+
+        /* Giving sizes to some elements. */
+
+        div[class*="col-"]:empty:before,
+        form:empty:before,
+        .row:empty:before,
+        .form-row:empty:before,
+        .form-group:empty:before,
+        .container:empty:before,
+        .vstack:empty:before,
+        .hstack:empty:before,
+        div[class*="container-"]:empty:before {
+            background-color: #eee;
+            content: 'Empty Row';
+            font-size: 20px;
+            color: #aaa;
+            font-weight: bold;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 80px;
+            padding: 0 10px;
+            line-height: 26px;
+        }
+
+        div[class*="col-"]:empty:before {
+            content: 'Empty Column';
+        }
+
+        form:empty:before {
+            content: 'Empty Form';
+        }
+
+        .form-group:empty:before {
+            content: 'Empty Form Group';
+        }
+
+        form.navbar-form:empty:before {
+            display: inline-block;
+            padding: 0 40px;
+            font-size: 16px;
+            line-height: 36px;
+        }
+
+        .container:empty:before,
+        div[class*="container-"]:empty:before {
+            content: 'Empty Container';
+        }
+
+        .vstack:empty:before,
+        .hstack:empty:before {
+            content: 'Empty Stack';
+        }
+
+        .thumbnail img:not([src]) {
+            background-repeat: no-repeat;
+            background-size: 100% 85%;
+            background-position-y: 50%;
+            width: 100%;
+            height: 180px;
+        }
+
+        /* Making the dropdown menus have a white background when they're edited */
+
+        .dropdown-item:active,
+        .dropdown-menu>li>a:focus {
+            background: unset;
+            color: unset;
+        }
+
+        /* This is needed because the li items are 0x0px by default,
+and bootstrap studio can't select them */
+
+        .pagination>li {
+            float: left;
+        }
+
+        /* Iframes without src are colored in gray */
+        .embed-responsive iframe:not([src]) {
+            background-color: #ddd;
+        }
+
+        /* This is needed, otherwise split buttons in input groups break into two lines. */
+
+        .input-group-btn .btn-group>.btn {
+            float: none;
+        }
+
+
+
+        body[bs-no-scroll] {
+            overflow: hidden !important;
+        }
+
+        div[class*="col-"]:empty,
+        div.col:empty {
+            display: flex;
+        }
+
+        div[class*="col-"]:empty:before,
+        form:empty:before,
+        .row:empty:before,
+        .container:empty:before,
+        div[class*="container-"]:empty:before {
+            width: 100%;
+        }
+
+        div.col:empty:before {
+            background-color: #eee;
+            content: 'Empty Column';
+            line-height: 40px;
+            text-align: center;
+            display: block;
+            line-height: 80px;
+            font-size: 20px;
+            color: #aaa;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        .toast-header img:not([src]):not([srcset]) {
+            width: 30px;
+            height: 30px;
+        }
+
+        /* Stopping css spinner animations */
+
+        .spinner-grow:not([bs-spinner-animation]),
+        .spinner-border:not([bs-spinner-animation]) {
+            animation: none;
+        }
+
+        .spinner-grow:not([bs-spinner-animation]) {
+            opacity: 1;
+            transform: scale(.8);
+        }
+
+        .custom-range::-webkit-slider-runnable-track {
+            cursor: inherit;
+        }
+
+        /* Prevent stretched links from capturing all page clicks */
+        a.stretched-link:after {
+            pointer-events: none;
+        }
+    </style>
+    <link rel="stylesheet" href="https://bootstrapstudio.io/demo//embed/animation/animate.min.css" bs-system-element=""
+        bs-hidden="">
+    <link rel="stylesheet" href="https://bootstrapstudio.io/demo//embed/animation/aos.min.css" bs-system-element=""
+        bs-hidden="">
+    <link rel="stylesheet" bs-hidden="1" bs-system-element="1"
+        href="https://bootstrapstudio.io/demo//embed/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" bs-hidden="1" bs-system-element="1"
+        href="https://bootstrapstudio.io/demo//embed/fonts/font-awesome.min.css">
+    <link rel="stylesheet" bs-hidden="1" bs-system-element="1"
+        href="https://bootstrapstudio.io/demo//embed/fonts/ionicons.min.css">
+    <link rel="stylesheet" bs-hidden="1" bs-system-element="1"
+        href="https://bootstrapstudio.io/demo//embed/fonts/line-awesome.min.css">
+    <link rel="stylesheet" bs-hidden="1" bs-system-element="1"
+        href="https://bootstrapstudio.io/demo//embed/fonts/material-icons.min.css">
+    <link rel="stylesheet" bs-hidden="1" bs-system-element="1"
+        href="https://bootstrapstudio.io/demo//embed/fonts/simple-line-icons.min.css">
+    <link rel="stylesheet" bs-hidden="1" bs-system-element="1"
+        href="https://bootstrapstudio.io/demo//embed/fonts/typicons.min.css">
+    <link rel="stylesheet" href="https://bootstrapstudio.io/demo//embed/fonts/fontawesome5-overrides.min.css"
+        bs-system-element="" bs-hidden="">
+    <style>
+        .bs-icon {
+            --bs-icon-size: .75rem;
+            display: flex;
+            flex-shrink: 0;
+            justify-content: center;
+            align-items: center;
+            font-size: var(--bs-icon-size);
+            width: calc(var(--bs-icon-size) * 2);
+            height: calc(var(--bs-icon-size) * 2);
+            color: var(--bs-primary);
+        }
+
+        .bs-icon-xs {
+            --bs-icon-size: 1rem;
+            width: calc(var(--bs-icon-size) * 1.5);
+            height: calc(var(--bs-icon-size) * 1.5);
+        }
+
+        .bs-icon-sm {
+            --bs-icon-size: 1rem;
+        }
+
+        .bs-icon-md {
+            --bs-icon-size: 1.5rem;
+        }
+
+        .bs-icon-lg {
+            --bs-icon-size: 2rem;
+        }
+
+        .bs-icon-xl {
+            --bs-icon-size: 2.5rem;
+        }
+
+        .bs-icon.bs-icon-primary {
+            color: var(--bs-white);
+            background: var(--bs-primary);
+        }
+
+        .bs-icon.bs-icon-primary-light {
+            color: var(--bs-primary);
+            background: rgba(var(--bs-primary-rgb), .2);
+        }
+
+        .bs-icon.bs-icon-semi-white {
+            color: var(--bs-primary);
+            background: rgba(255, 255, 255, .5);
+        }
+
+        .bs-icon.bs-icon-rounded {
+            border-radius: .5rem;
+        }
+
+        .bs-icon.bs-icon-circle {
+            border-radius: 50%;
+        }
+    </style>
+    <style bs-system-element="" bs-hidden=""></style>
+    <style bs-system-element="" bs-hidden=""></style>
+</head>
+
+<body>
+    <nav class="navbar navbar-light navbar-expand-md py-3">
+        <div class="container"><a class="navbar-brand d-flex align-items-center" href=""><span
+                    class="bs-icon-sm bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center me-2 bs-icon"><svg
+                        xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor"
+                        viewBox="0 0 16 16" class="bi bi-bezier">
+                        <path fill-rule="evenodd"
+                            d="M0 10.5A1.5 1.5 0 0 1 1.5 9h1A1.5 1.5 0 0 1 4 10.5v1A1.5 1.5 0 0 1 2.5 13h-1A1.5 1.5 0 0 1 0 11.5v-1zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zm10.5.5A1.5 1.5 0 0 1 13.5 9h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5v-1zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zM6 4.5A1.5 1.5 0 0 1 7.5 3h1A1.5 1.5 0 0 1 10 4.5v1A1.5 1.5 0 0 1 8.5 7h-1A1.5 1.5 0 0 1 6 5.5v-1zM7.5 4a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1z">
+                        </path>
+                        <path
+                            d="M6 4.5H1.866a1 1 0 1 0 0 1h2.668A6.517 6.517 0 0 0 1.814 9H2.5c.123 0 .244.015.358.043a5.517 5.517 0 0 1 3.185-3.185A1.503 1.503 0 0 1 6 5.5v-1zm3.957 1.358A1.5 1.5 0 0 0 10 5.5v-1h4.134a1 1 0 1 1 0 1h-2.668a6.517 6.517 0 0 1 2.72 3.5H13.5c-.123 0-.243.015-.358.043a5.517 5.517 0 0 0-3.185-3.185z">
+                        </path>
+                    </svg></span><span>XCloud</span></a><button data-bs-toggle="collapse" data-bs-target="#navcol-3"
+                class="navbar-toggler"><span class="visually-hidden">Toggle navigation</span><span
+                    class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navcol-3">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link active" href="">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/UploadHistory">Upload History</a></li>
+                    <li class="nav-item"><a class="nav-link" href="https://max:10000/sysinfo.cgi?xnavigation=1">Server Status</a></li>
+                </ul><button class="btn btn-primary" type="button" onclick="run();">Upload</button>
+            </div>
+        </div>
+    </nav>
+    <div class="container py-4 py-xl-5">
+        <div class="row mb-5">
+            <div class="col-md-8 col-xl-6 text-center mx-auto">
+                <h2>XCloud</h2>
+                <p class="w-lg-50">Gooder</p>
+            </div>
+        </div>
+        <div class="row gy-4 row-cols-1 row-cols-md-2 row-cols-xl-3">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body p-4">
+                        <div
+                            class="bs-icon-md bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center d-inline-block mb-3 bs-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor"
+                                viewBox="0 0 16 16" class="bi bi-bell">
+                                <path
+                                    d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z">
+                                </path>
+                            </svg></div>
+                        <h4 class="card-title">Notifications On Upload</h4>
+                        <p class="card-text">Get notified when your file hits the net</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <div class="card-body p-4">
+                        <div
+                            class="bs-icon-md bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center d-inline-block mb-3 bs-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor"
+                                viewBox="0 0 16 16" class="bi bi-bezier">
+                                <path fill-rule="evenodd"
+                                    d="M0 10.5A1.5 1.5 0 0 1 1.5 9h1A1.5 1.5 0 0 1 4 10.5v1A1.5 1.5 0 0 1 2.5 13h-1A1.5 1.5 0 0 1 0 11.5v-1zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zm10.5.5A1.5 1.5 0 0 1 13.5 9h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5v-1zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zM6 4.5A1.5 1.5 0 0 1 7.5 3h1A1.5 1.5 0 0 1 10 4.5v1A1.5 1.5 0 0 1 8.5 7h-1A1.5 1.5 0 0 1 6 5.5v-1zM7.5 4a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1z">
+                                </path>
+                                <path
+                                    d="M6 4.5H1.866a1 1 0 1 0 0 1h2.668A6.517 6.517 0 0 0 1.814 9H2.5c.123 0 .244.015.358.043a5.517 5.517 0 0 1 3.185-3.185A1.503 1.503 0 0 1 6 5.5v-1zm3.957 1.358A1.5 1.5 0 0 0 10 5.5v-1h4.134a1 1 0 1 1 0 1h-2.668a6.517 6.517 0 0 1 2.72 3.5H13.5c-.123 0-.243.015-.358.043a5.517 5.517 0 0 0-3.185-3.185z">
+                                </path>
+                            </svg></div>
+                        <h4 class="card-title">Safe &amp; Secure</h4>
+                        <p class="card-text">Your file can never get track, hacked, cracked. Because of the encryption
+                            method and its localhost only request methods</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <div class="card-body p-4">
+                        <div
+                            class="bs-icon-md bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center d-inline-block mb-3 bs-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor"
+                                viewBox="0 0 16 16" class="bi bi-flag">
+                                <path
+                                    d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12.435 12.435 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A19.626 19.626 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a19.587 19.587 0 0 0 1.349-.476l.019-.007.004-.002h.001M14 1.221c-.22.078-.48.167-.766.255-.81.252-1.872.523-2.734.523-.886 0-1.592-.286-2.203-.534l-.008-.003C7.662 1.21 7.139 1 6.5 1c-.669 0-1.606.229-2.415.478A21.294 21.294 0 0 0 3 1.845v6.433c.22-.078.48-.167.766-.255C4.576 7.77 5.638 7.5 6.5 7.5c.847 0 1.548.28 2.158.525l.028.01C9.32 8.29 9.86 8.5 10.5 8.5c.668 0 1.606-.229 2.415-.478A21.317 21.317 0 0 0 14 7.655V1.222z">
+                                </path>
+                            </svg></div>
+                        <h4 class="card-title">Fast</h4>
+                        <p class="card-text">First to upload the file compared to other file uploaders</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container py-4 py-xl-5">
+        <div class="row gy-4 row-cols-2 row-cols-md-4">
+            <div class="col-lg-6">
+                <div class="text-center d-flex flex-column justify-content-center align-items-center py-3">
+                    <div
+                        class="bs-icon-xl bs-icon-circle bs-icon-primary d-flex flex-shrink-0 justify-content-center align-items-center d-inline-block mb-2 bs-icon lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor"
+                            viewBox="0 0 16 16" class="bi bi-bezier">
+                            <path fill-rule="evenodd"
+                                d="M0 10.5A1.5 1.5 0 0 1 1.5 9h1A1.5 1.5 0 0 1 4 10.5v1A1.5 1.5 0 0 1 2.5 13h-1A1.5 1.5 0 0 1 0 11.5v-1zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zm10.5.5A1.5 1.5 0 0 1 13.5 9h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5v-1zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zM6 4.5A1.5 1.5 0 0 1 7.5 3h1A1.5 1.5 0 0 1 10 4.5v1A1.5 1.5 0 0 1 8.5 7h-1A1.5 1.5 0 0 1 6 5.5v-1zM7.5 4a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1z">
+                            </path>
+                            <path
+                                d="M6 4.5H1.866a1 1 0 1 0 0 1h2.668A6.517 6.517 0 0 0 1.814 9H2.5c.123 0 .244.015.358.043a5.517 5.517 0 0 1 3.185-3.185A1.503 1.503 0 0 1 6 5.5v-1zm3.957 1.358A1.5 1.5 0 0 0 10 5.5v-1h4.134a1 1 0 1 1 0 1h-2.668a6.517 6.517 0 0 1 2.72 3.5H13.5c-.123 0-.243.015-.358.043a5.517 5.517 0 0 0-3.185-3.185z">
+                            </path>
+                        </svg></div>
+                    <div class="px-3">
+                        <h2 class="fw-bold mb-0">42</h2>
+                        <p class="mb-0"><strong>Connections</strong><br></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="text-center d-flex flex-column justify-content-center align-items-center py-3">
+                    <div
+                        class="bs-icon-xl bs-icon-circle bs-icon-primary d-flex flex-shrink-0 justify-content-center align-items-center d-inline-block mb-2 bs-icon lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor"
+                            viewBox="0 0 16 16" class="bi bi-bezier">
+                            <path
+                                d="M1 2a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v1h.5A1.5 1.5 0 0 1 16 4.5v7a1.5 1.5 0 0 1-1.5 1.5h-.55a2.5 2.5 0 0 1-2.45 2h-8A2.5 2.5 0 0 1 1 12.5V2zm13 10h.5a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.5-.5H14v8zM13 2H2v10.5A1.5 1.5 0 0 0 3.5 14h8a1.5 1.5 0 0 0 1.5-1.5V2z">
+                            </path>
+                        </svg></div>
+                    <div class="px-3">
+                        <h2 class="fw-bold mb-0">781</h2>
+                        <p class="mb-0"><strong>Files</strong><br></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="text-center">
+            <div class="container text-muted py-4 py-lg-5">
+                <p class="mb-0">Copyright © 2022 XCloud</p>
+            </div>
+        </footer>
+    </div>
+</body>
+
+</html>
