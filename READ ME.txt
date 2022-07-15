@@ -1,0 +1,7 @@
+Install Guide
+
+Any OS with NodeJS Installed run the command below in this directory
+npm i crypto express-fileupload express path
+
+then to start the service run the command below
+node .
